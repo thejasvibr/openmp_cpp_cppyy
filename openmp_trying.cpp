@@ -5,8 +5,9 @@
 #include<random>
 #include <Eigen/Dense>
 #include "example_eigen.h"
-#include <unistd.h> // for sleep
-#include <stdio.h>
+//#include <unistd.h> // for sleep
+#include <chrono>
+#include <thread>
 #include <stdlib.h>
 #include <time.h>
 
@@ -36,18 +37,21 @@ arraygeom.rowwise() -= row1.transpose();
 VectorXd d = VectorXd::Random(4);
 
 solutions = spiesberger_wahlberg_solution(arraygeom, d);
-usleep(500);
+//std::this_thread::sleep_for(std::chrono::milliseconds(1));
 return solutions;	
 }
 
 
 std::vector<std::vector<VectorXd>> pll_linalgebra(){
-int num_runs = 10000;
+int num_runs = 20000;
 std::vector<std::vector<VectorXd>> many_solutions(num_runs);
 
 #pragma omp parallel for
 for (int i=0; i<num_runs; i++){
 	many_solutions[i] = run_linalgebra();
+	run_linalgebra();
+	run_linalgebra();
+	run_linalgebra();
 	}
 return many_solutions;
 }
@@ -64,15 +68,10 @@ std::cout << "Miaow" << std::endl;
 q = run_linalgebra();
 
 time_t my_time = time(NULL);
-// ctime() used to give the present time
 printf("%s", ctime(&my_time));
+std::cout << "Bow" << std::endl;
 many = pll_linalgebra();
 
-/*for (int i=0; i<many.size(); i++){
-	std::cout << many[i][0].transpose() << std::endl;
-	std::cout << many[i][1].transpose() << std::endl;
-	std::cout << "next soln" << std::endl;
-	}*/
 time_t my_time2 = time(NULL);
 printf("%s", ctime(&my_time2));	
 
